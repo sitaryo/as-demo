@@ -33,23 +33,33 @@ spring:
   security:
     oauth2:
       client:
+
         registration:
-          client-demo:
-            client-id: client-demo
-            client-secret: 1
+          licky-client-oidc:
+            provider: licky-auth-server
+            client-id: licky-client-oidc
+            client-secret: licky-password
+            scope: openid
             authorization-grant-type: authorization_code
-            client-authentication-method: client_secret_basic
-            redirect-uri: http://127.0.0.1:9090/login/oauth2/code/client-demo
-            client-name: 1
+            redirect-uri: http://client.localhost:9090/login/oauth2/code/client-demo-oidc
+            client-name: licky-client-oidc
+          licky-client:
+            provider: licky-auth-server
+            client-id: licky-client
+            client-secret: licky-password
+            scope: read,write
+            authorization-grant-type: authorization_code
+            redirect-uri: http://client.localhost:9090/authorized
+            client-name: licky-client
         provider:
-          client-demo:
-            authorization-uri: http://localhost:8080/oauth2/v1/authorize
-            token-uri: http://localhost:8080/oauth2/v1/token
-            jwk-set-uri: http://localhost:8080/oauth2/v1/jwks
-            issuer-uri: http://localhost:8080
-            user-info-uri: http://localhost:8080/connect/v1/userinfo
+          licky-auth-server:
+            issuer-uri: http://auth.localhost:8080
+#            authorization-uri: http://auth.localhost:8080/oauth2/v1/authorize
+#            token-uri: http://auth.localhost:8080/oauth2/v1/token
+#            jwk-set-uri: http://localhost:8080/oauth2/v1/jwks
+#            user-info-uri: http://localhost:8080/connect/v1/userinfo
 #            user-info-authentication-method: none
-#            user-name-attribute:
+#            user-name-attribute: username
 server:
   port: 9090
 

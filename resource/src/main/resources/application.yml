@@ -1,24 +1,19 @@
 spring:
-
   profiles:
     active: dev
-
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-
   data:
     jpa:
       repositories:
         bootstrap-mode: lazy
-
   datasource:
     url: jdbc:postgresql://localhost:5432/as-data?characterEncoding=utf8&useSSL=false&autoReconnect=true
     username: postgres
     password: abcd1234
     driver-class-name: org.postgresql.Driver
     type: com.zaxxer.hikari.HikariDataSource
-
   jpa:
     properties:
       hibernate:
@@ -29,9 +24,13 @@ spring:
       ddl-auto: update
       use-new-id-generator-mappings: true
     open-in-view: true
-
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://auth.localhost:8080
 server:
-  port: 8080
+  port: 7070
 
 logging:
   level:

@@ -5,8 +5,6 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import com.sendroids.as.service.JpaOAuth2AuthorizationConsentService;
-import com.sendroids.as.service.JpaOAuth2AuthorizationService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -14,12 +12,15 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -110,16 +111,37 @@ public class SecurityConfig {
 
     @Bean
     public ProviderSettings providerSettings() {
+//        default endpoint
+//      .authorizationEndpoint("/oauth2/authorize")
+//		.tokenEndpoint("/oauth2/token")
+//		.jwkSetEndpoint("/oauth2/jwks")
+//		.tokenRevocationEndpoint("/oauth2/revoke")
+//		.tokenIntrospectionEndpoint("/oauth2/introspect")
+//		.oidcClientRegistrationEndpoint("/connect/register")
+//		.oidcUserInfoEndpoint("/userinfo");
         return ProviderSettings.builder()
-                .issuer("http://localhost:8080")
-                .authorizationEndpoint("/oauth2/v1/authorize")
-                .tokenEndpoint("/oauth2/v1/token")
-                .tokenIntrospectionEndpoint("/oauth2/v1/introspect")
-                .tokenRevocationEndpoint("/oauth2/v1/revoke")
-                .jwkSetEndpoint("/oauth2/v1/jwks")
-                .oidcUserInfoEndpoint("/connect/v1/userinfo")
-                .oidcClientRegistrationEndpoint("/connect/v1/register")
+                .issuer("http://auth.localhost:8080")
                 .build();
+    }
+
+    @Bean
+    RegisteredClientRepository registeredClientRepository(){
+        return new InMemoryRegisteredClientRepository(
+                RegisteredClient
+                        .withId(UUID.randomUUID().toString())
+                        .clientId("licky-client")
+                        .clientSecret("{noop}licky-password")
+                        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                        .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                        .redirectUri("http://client.localhost:9090/login/oauth2/code/licky-client-oidc")
+                        .redirectUri("http://client.localhost:9090/authorized")
+                        .scope(OidcScopes.OPENID)
+                        .scope("read")
+                        .scope("write")
+                .build()
+        );
+
     }
 
 }
