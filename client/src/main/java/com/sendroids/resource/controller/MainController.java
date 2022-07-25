@@ -24,4 +24,9 @@ public class MainController {
                 .bodyToMono(String.class)
                 .block();
     }
+
+    @GetMapping("/authorized")
+    public String authorized(@RegisteredOAuth2AuthorizedClient("licky-client") OAuth2AuthorizedClient client) {
+        return client.getAccessToken().getTokenValue();
+    }
 }
