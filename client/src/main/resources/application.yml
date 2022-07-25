@@ -1,0 +1,68 @@
+spring:
+
+  profiles:
+    active: dev
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: lazy
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/as-data?characterEncoding=utf8&useSSL=false&autoReconnect=true
+    username: postgres
+    password: abcd1234
+    driver-class-name: org.postgresql.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: false
+    show-sql: true
+    database: postgresql
+    hibernate:
+      ddl-auto: update
+      use-new-id-generator-mappings: true
+    open-in-view: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          client-demo:
+            client-id: client-demo
+            client-secret: 1
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_basic
+            redirect-uri: http://127.0.0.1:9090/login/oauth2/code/client-demo
+            client-name: 1
+        provider:
+          client-demo:
+            authorization-uri: http://localhost:8080/oauth2/v1/authorize
+            token-uri: http://localhost:8080/oauth2/v1/token
+            jwk-set-uri: http://localhost:8080/oauth2/v1/jwks
+            issuer-uri: http://localhost:8080
+            user-info-uri: http://localhost:8080/connect/v1/userinfo
+#            user-info-authentication-method: none
+#            user-name-attribute:
+server:
+  port: 9090
+
+logging:
+  level:
+    root: info
+    org.springframework.security.*: TRACE
+
+management:
+  endpoint:
+    shutdown:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"

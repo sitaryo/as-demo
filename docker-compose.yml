@@ -1,0 +1,11 @@
+version: "2"
+services:
+  as:
+    image: postgres:12.3
+    container_name: "as-data"
+    environment:
+      POSTGRES_PASSWORD: abcd1234
+      POSTGRES_DB: as-data
+      POSTGRES_USER: postgres
+    ports:
+      - "5432:5432"
