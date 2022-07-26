@@ -27,11 +27,13 @@ import org.springframework.security.oauth2.server.authorization.config.ProviderS
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.web.cors.CorsConfiguration;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Collections;
 import java.util.UUID;
 
 @Configuration
@@ -45,6 +47,17 @@ public class SecurityConfig {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
         http
+                .cors()
+                .configurationSource(request -> {
+                    var corsConfig = new CorsConfiguration();
+                    corsConfig.setAllowedHeaders(Collections.singletonList(CorsConfiguration.ALL));
+                    corsConfig.setAllowedMethods(Collections.singletonList(CorsConfiguration.ALL));
+                    corsConfig.setAllowedOriginPatterns(Collections.singletonList(CorsConfiguration.ALL));
+                    corsConfig.addExposedHeader("Authorization");
+                    corsConfig.setAllowCredentials(true);
+                    return corsConfig;
+                })
+                .and()
                 .exceptionHandling((exceptions) -> exceptions
                         .authenticationEntryPoint(
                                 new LoginUrlAuthenticationEntryPoint("/login"))
@@ -145,14 +158,14 @@ public class SecurityConfig {
                 RegisteredClient
                         .withId(UUID.randomUUID().toString())
                         .clientId("licky-public")
-                        .clientSecret("{noop}licky-password")
+//                        .clientSecret("{noop}licky--password")
                         .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
                         .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
                         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                         .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                         // fixme change redirectUri
-                        .redirectUri("http://client.localhost:9090/login/oauth2/code/licky-client-oidc")
-                        .redirectUri("http://client.localhost:9090/authorized")
+//                        .redirectUri("http://client.localhost:9090/login/oauth2/code/licky-client-oidc")
+                        .redirectUri("http://127.0.0.1:8989/authorized")
                         .scope(OidcScopes.OPENID)
                         .scope("read")
                         .scope("write")

@@ -12,11 +12,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Collections;
 import java.util.UUID;
 
 @Configuration
@@ -26,6 +28,17 @@ public class SecurityConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
             throws Exception {
         http
+                .cors()
+                .configurationSource(request -> {
+                    var corsConfig = new CorsConfiguration();
+                    corsConfig.setAllowedHeaders(Collections.singletonList(CorsConfiguration.ALL));
+                    corsConfig.setAllowedMethods(Collections.singletonList(CorsConfiguration.ALL));
+                    corsConfig.setAllowedOriginPatterns(Collections.singletonList(CorsConfiguration.ALL));
+                    corsConfig.addExposedHeader("Authorization");
+                    corsConfig.setAllowCredentials(true);
+                    return corsConfig;
+                })
+                .and()
                 .mvcMatcher("/**")
                 .authorizeHttpRequests()
                 .mvcMatchers("/**")
