@@ -141,7 +141,22 @@ public class SecurityConfig {
                         .scope(OidcScopes.OPENID)
                         .scope("read")
                         .scope("write")
-                .build()
+                .build(),
+                RegisteredClient
+                        .withId(UUID.randomUUID().toString())
+                        .clientId("licky-public")
+                        .clientSecret("{noop}licky-password")
+                        .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+                        .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
+                        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                        .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                        // fixme change redirectUri
+                        .redirectUri("http://client.localhost:9090/login/oauth2/code/licky-client-oidc")
+                        .redirectUri("http://client.localhost:9090/authorized")
+                        .scope(OidcScopes.OPENID)
+                        .scope("read")
+                        .scope("write")
+                        .build()
         );
 
     }
