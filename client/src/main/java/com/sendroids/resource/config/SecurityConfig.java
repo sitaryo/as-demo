@@ -20,7 +20,10 @@ public class SecurityConfig {
                                         .anyRequest()
                                         .permitAll()
                 )
-                .oauth2Login(Customizer.withDefaults())
+                .oauth2Login()
+                    // 用来匹配进入 OAuth2LoginAuthenticationFilter ,默认为 /login/oauth2/code/*
+                    .loginProcessingUrl("/login/*")
+                    .and()
                 .oauth2Client(Customizer.withDefaults());
 
         return http.build();

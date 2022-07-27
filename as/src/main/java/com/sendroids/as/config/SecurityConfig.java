@@ -61,7 +61,9 @@ public class SecurityConfig {
                 .exceptionHandling((exceptions) -> exceptions
                         .authenticationEntryPoint(
                                 new LoginUrlAuthenticationEntryPoint("/login"))
-                );
+                )
+                .oauth2ResourceServer()
+                .jwt();
 
         return http.build();
     }
@@ -149,22 +151,31 @@ public class SecurityConfig {
                         .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                         .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                        .redirectUri("http://client.localhost:9090/login/oauth2/code/licky-client-oidc")
                         .redirectUri("http://client.localhost:9090/authorized")
-                        .scope(OidcScopes.OPENID)
                         .scope("read")
                         .scope("write")
                 .build(),
                 RegisteredClient
                         .withId(UUID.randomUUID().toString())
+                        .clientId("licky-client-oidc")
+                        .clientSecret("{noop}licky-oidc-password")
+                        .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+                        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                        .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                        .redirectUri("http://client.localhost:9090/login/licky-client-oidc")
+                        .scope(OidcScopes.OPENID)
+                        .scope("read")
+                        .scope("write")
+                        .scope(OidcScopes.EMAIL)
+                        .build(),
+                RegisteredClient
+                        .withId(UUID.randomUUID().toString())
                         .clientId("licky-public")
-//                        .clientSecret("{noop}licky--password")
                         .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
                         .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
                         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                         .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                        // fixme change redirectUri
-//                        .redirectUri("http://client.localhost:9090/login/oauth2/code/licky-client-oidc")
                         .redirectUri("http://127.0.0.1:8989/authorized")
                         .scope(OidcScopes.OPENID)
                         .scope("read")
