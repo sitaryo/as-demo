@@ -41,17 +41,13 @@ class Oauth2Service {
   }
 
   static Future<oauth2.Client> getClient({Map<String, String>? param}) async {
-    final credentials = StorageService.getCredentials();
     final code = StorageService.getCodeVerifier();
 
     if (code == null) {
       throw Exception("please login first");
     }
 
-    if (credentials != null) {
-      return oauth2.Client(credentials, identifier: identifier);
-    }
-    if (param != null) {
+    if (param != null && param.isNotEmpty) {
       final grant = _grant(code);
       grant.getAuthorizationUrl(
         redirectUrl,
@@ -59,6 +55,15 @@ class Oauth2Service {
       );
       final client = await grant.handleAuthorizationResponse(param);
       StorageService.setCredentials(client.credentials);
+      return client;
+    }
+    final credentials = StorageService.getCredentials();
+    if (credentials != null) {
+      final client = oauth2.Client(credentials, identifier: identifier);
+      if (client.credentials.isExpired) {
+        await client.refreshCredentials();
+        return client;
+      }
       return client;
     }
     throw Exception("please provide AuthorizationCode");

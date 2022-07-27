@@ -9,6 +9,8 @@ class Authorized extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final client = useState<oath2.Client?>(null);
+    final message = useState("");
+    final sending = useState(false);
 
     useEffect(() {
       Oauth2Service.getClient(param: Uri.base.queryParameters).then((c) {
@@ -16,14 +18,17 @@ class Authorized extends HookWidget {
       });
     }, []);
 
-    message() {
+    getMessage() {
+      sending.value = true;
       print(
           "use access token ${client.value?.credentials.accessToken} to get message");
       client.value
           ?.get(Uri.parse("http://resrouce.localhost:7070/message"))
           .then((data) {
+        message.value = data.body;
         print("you get message:\n ${data.body}");
-      });
+      })
+      .whenComplete(() => sending.value = false);
     }
 
     return Scaffold(
@@ -33,15 +38,22 @@ class Authorized extends HookWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
-            Text(
-              'Press button to get message',
-            ),
+          children: [
+            const Text('Press button to get message'),
+            if (sending.value)
+              const SizedBox.square(
+                dimension: 50,
+                child: CircularProgressIndicator(),
+              ),
+            if (message.value != "") ...[
+              const Text('you got message :'),
+              Text(message.value)
+            ]
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: message,
+        onPressed: getMessage,
         tooltip: 'get message',
         child: const Icon(Icons.send),
       ),
