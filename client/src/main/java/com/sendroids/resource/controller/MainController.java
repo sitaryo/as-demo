@@ -39,4 +39,14 @@ public class MainController {
     public String authorized(@RegisteredOAuth2AuthorizedClient("licky-client") OAuth2AuthorizedClient client) {
         return client.getAccessToken().getTokenValue();
     }
+
+    @GetMapping("/message-client")
+    public String messageClient(@RegisteredOAuth2AuthorizedClient("licky-client-credentials") OAuth2AuthorizedClient client) {
+        return webClient.get()
+                .uri("http://rescource.localhost:7070/message")
+                .attributes(ServerOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient(client))
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
 }

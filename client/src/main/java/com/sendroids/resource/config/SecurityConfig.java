@@ -21,9 +21,9 @@ public class SecurityConfig {
                                         .permitAll()
                 )
                 .oauth2Login()
-                    // 用来匹配进入 OAuth2LoginAuthenticationFilter ,默认为 /login/oauth2/code/*
-                    .loginProcessingUrl("/login/*")
-                    .and()
+                // 用来匹配进入 OAuth2LoginAuthenticationFilter ,默认为 /login/oauth2/code/*
+                .loginProcessingUrl("/login/*")
+                .and()
                 .oauth2Client(Customizer.withDefaults());
 
         return http.build();

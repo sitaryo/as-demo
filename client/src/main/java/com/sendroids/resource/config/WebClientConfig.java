@@ -20,6 +20,7 @@ public class WebClientConfig {
         var provider = OAuth2AuthorizedClientProviderBuilder.builder()
                 .authorizationCode()
                 .refreshToken()
+                .clientCredentials()
                 .build();
 
         DefaultOAuth2AuthorizedClientManager manager =

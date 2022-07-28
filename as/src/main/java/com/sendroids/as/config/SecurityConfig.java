@@ -171,6 +171,16 @@ public class SecurityConfig {
                         .build(),
                 RegisteredClient
                         .withId(UUID.randomUUID().toString())
+                        .clientId("licky-client-credentials")
+                        .clientSecret("{noop}licky-credentials-password")
+                        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                        .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                        .redirectUri("http://client.localhost:9090/credentials")
+                        .scope("read")
+                        .scope("write")
+                        .build(),
+                RegisteredClient
+                        .withId(UUID.randomUUID().toString())
                         .clientId("licky-public")
                         .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
                         .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
