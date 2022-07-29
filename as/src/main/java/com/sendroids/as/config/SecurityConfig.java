@@ -148,7 +148,7 @@ public class SecurityConfig {
                         .clientId("licky-client")
                         .clientSecret("{noop}licky-password")
                         .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
-                        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
                         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                         .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                         .redirectUri("http://client.localhost:9090/authorized")

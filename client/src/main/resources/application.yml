@@ -55,6 +55,7 @@ spring:
             provider: licky-auth-server
             client-id: licky-client
             client-secret: licky-password
+            client-authentication-method: client_secret_post
             scope: read,write
             authorization-grant-type: authorization_code
             redirect-uri: http://client.localhost:9090/authorized
