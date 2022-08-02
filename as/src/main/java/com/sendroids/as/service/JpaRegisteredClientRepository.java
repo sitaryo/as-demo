@@ -161,23 +161,4 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
         }
         return new ClientAuthenticationMethod(clientAuthenticationMethod);      // Custom client authentication method
     }
-
-//    @EventListener(ApplicationReadyEvent.class)
-//    public void doSomethingAfterStartup() {
-//        var client = RegisteredClient.withId("1")
-//                .clientId("1")
-//                .clientIdIssuedAt(Instant.now())
-//                .clientSecret("1")
-//                .clientSecretExpiresAt(Instant.now().plus(10*365, ChronoUnit.DAYS))
-//                .clientName("name")
-//                .clientAuthenticationMethods(authenticationMethods ->authenticationMethods.add(CLIENT_SECRET_BASIC))
-//                .authorizationGrantTypes((grantTypes) -> grantTypes.add(AUTHORIZATION_CODE))
-//                .redirectUris((uris) -> uris.add(""))
-//                .scopes((scopes) -> scopes.add("read"))
-//                .clientSettings(ClientSettings.builder().build())
-//                .tokenSettings(TokenSettings.builder().build())
-//                .build();
-//        clientRepository.save(toEntity(client));
-//        System.out.println("hello world, I have just started up");
-//    }
 }

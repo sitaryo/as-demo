@@ -24,11 +24,7 @@ spring:
       ddl-auto: update
       use-new-id-generator-mappings: true
     open-in-view: true
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://auth.localhost:8080
+
 server:
   port: 7070
 

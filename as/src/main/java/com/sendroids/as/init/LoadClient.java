@@ -1,4 +1,4 @@
-package com.sendroids.as.some;
+package com.sendroids.as.init;
 
 import com.sendroids.as.service.JpaRegisteredClientRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -79,6 +79,14 @@ public class LoadClient {
                         .scope(OidcScopes.OPENID)
                         .scope("read")
                         .scope("write")
+                        .build(),
+                RegisteredClient
+                        .withId(UUID.randomUUID().toString())
+                        .clientId("resource-client")
+                        .clientSecret("{noop}resource-client-password")
+                        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                        .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                        .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                         .build()
         ).forEach(clientRepository::save);
     }
