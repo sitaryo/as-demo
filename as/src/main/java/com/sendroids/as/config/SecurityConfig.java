@@ -8,6 +8,7 @@ import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,17 +24,32 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private static final Function<HttpServletRequest,CorsConfiguration> corsConfigurationSource = (request) -> {
+        var corsConfig = new CorsConfiguration();
+        corsConfig.setAllowedHeaders(Collections.singletonList(CorsConfiguration.ALL));
+        corsConfig.setAllowedMethods(Collections.singletonList(CorsConfiguration.ALL));
+        corsConfig.setAllowedOriginPatterns(Collections.singletonList(CorsConfiguration.ALL));
+        corsConfig.addExposedHeader("Authorization");
+        corsConfig.setAllowCredentials(true);
+        return corsConfig;
+    };
 
     @Bean
     @Order(1)
@@ -51,21 +67,13 @@ public class SecurityConfig {
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests.anyRequest().authenticated()
                 )
+                .cors()
+                .configurationSource(corsConfigurationSource::apply)
+                .and()
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
                 .apply(authorizationServerConfigurer);
 
         http
-                .cors()
-                .configurationSource(request -> {
-                    var corsConfig = new CorsConfiguration();
-                    corsConfig.setAllowedHeaders(Collections.singletonList(CorsConfiguration.ALL));
-                    corsConfig.setAllowedMethods(Collections.singletonList(CorsConfiguration.ALL));
-                    corsConfig.setAllowedOriginPatterns(Collections.singletonList(CorsConfiguration.ALL));
-                    corsConfig.addExposedHeader("Authorization");
-                    corsConfig.setAllowCredentials(true);
-                    return corsConfig;
-                })
-                .and()
                 .exceptionHandling((exceptions) -> exceptions
                         .authenticationEntryPoint(
                                 new LoginUrlAuthenticationEntryPoint("/login"))
@@ -81,11 +89,14 @@ public class SecurityConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
             throws Exception {
         http
+                .cors()
+                .configurationSource(corsConfigurationSource::apply)
+                .and()
                 .authorizeHttpRequests((authorize) -> authorize
+                        .antMatchers(HttpMethod.OPTIONS)
+                        .permitAll()
                         .anyRequest().authenticated()
                 )
-                // Form login handles the redirect to the login page from the
-                // authorization server filter chain
                 .formLogin(Customizer.withDefaults());
 
         return http.build();

@@ -54,7 +54,7 @@ public class LoadClient {
                         .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                         .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                        .redirectUri("http://client.localhost:9090/oidc")
+                        .redirectUri("http://client.localhost:9090/oidc/authorized")
                         .scope(OidcScopes.OPENID)
                         .scope("read")
                         .scope("write")
@@ -90,10 +90,11 @@ public class LoadClient {
                         .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
                         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                         .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                        .redirectUri("http://127.0.0.1:8989/authorized")
+                        .redirectUri("http://192.168.3.137:8989/authorized")
                         .scope(OidcScopes.OPENID)
                         .scope("read")
                         .scope("write")
+                        .scope(OidcScopes.EMAIL)
                         .clientIdIssuedAt(Instant.now())
                         .build(),
                 RegisteredClient

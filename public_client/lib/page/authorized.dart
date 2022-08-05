@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:oauth2/oauth2.dart' as oath2;
@@ -22,13 +25,25 @@ class Authorized extends HookWidget {
       sending.value = true;
       print(
           "use access token ${client.value?.credentials.accessToken} to get message");
-      client.value
-          ?.get(Uri.parse("http://resrouce.localhost:7070/message"))
-          .then((data) {
+      // client.value
+      //     ?.get(Uri.parse("http://resrouce.localhost:7070/message"))
+      //     .then((data) {
+      //   message.value = data.body;
+      //   print("you get message:\n ${data.body}");
+      // }).whenComplete(() => sending.value = false);
+
+      // Dio(BaseOptions(
+      //   method: "GET",
+      //   headers: {"authorization": client.value?.credentials.idToken ?? ""},
+      // )).get("http://auth.localhost:8080/userinfo").then((data) {
+      //   message.value = data.data;
+      //   print("you get message:\n ${data.data}");
+      // }).whenComplete(() => sending.value = false);
+      client.value?.get(
+        Uri.parse("http://auth.localhost:8080/userinfo")).then((data) {
         message.value = data.body;
         print("you get message:\n ${data.body}");
-      })
-      .whenComplete(() => sending.value = false);
+      }).whenComplete(() => sending.value = false);
     }
 
     return Scaffold(
@@ -48,7 +63,14 @@ class Authorized extends HookWidget {
             if (message.value != "") ...[
               const Text('you got message :'),
               Text(message.value)
-            ]
+            ],
+            ElevatedButton(
+              child: const Text("logout"),
+              onPressed: () {
+                Oauth2Service.logout();
+                Navigator.pop(context);
+              },
+            ),
           ],
         ),
       ),

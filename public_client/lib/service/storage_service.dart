@@ -10,6 +10,10 @@ class StorageService {
     _store = await SharedPreferences.getInstance();
   }
 
+  static clear() {
+    _store.clear();
+  }
+
   static setCredentials(oauth2.Credentials credentials) {
     _store.setString(_credentials, credentials.toJson());
   }
