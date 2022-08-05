@@ -35,6 +35,7 @@ spring:
       client:
 
         registration:
+          # 用于测试 oauth2-client_credentials 方式认证
           licky-client-credentials:
             provider: licky-auth-server
             client-id: licky-client-credentials
@@ -43,6 +44,7 @@ spring:
             authorization-grant-type: client_credentials
             redirect-uri: http://client.localhost:9090/credentials
             client-name: licky-client-credentials
+          # 用于测试 OIDC 登陆
           licky-client-oidc:
             provider: licky-auth-server
             client-id: licky-client-oidc
@@ -51,6 +53,7 @@ spring:
             authorization-grant-type: authorization_code
             redirect-uri: http://client.localhost:9090/login/licky-client-oidc
             client-name: licky-client-oidc
+          # 用于测试 oauth2-authorization_code 认证
           licky-client:
             provider: licky-auth-server
             client-id: licky-client
@@ -60,15 +63,18 @@ spring:
             authorization-grant-type: authorization_code
             redirect-uri: http://client.localhost:9090/authorized
             client-name: licky-client
+          # 用于 OIDC Client Registration
+          dev-client:
+            provider: licky-auth-server
+            client-id: dev-client
+            client-secret: dev-client-password
+            client-name: dev-client
+            scope: client.create
+            authorization-grant-type: client_credentials
+            redirect-uri: http://client.localhost:9090/dev-client
         provider:
           licky-auth-server:
             issuer-uri: http://auth.localhost:8080
-#            authorization-uri: http://auth.localhost:8080/oauth2/v1/authorize
-#            token-uri: http://auth.localhost:8080/oauth2/v1/token
-#            jwk-set-uri: http://localhost:8080/oauth2/v1/jwks
-#            user-info-uri: http://localhost:8080/connect/v1/userinfo
-#            user-info-authentication-method: none
-#            user-name-attribute: username
 server:
   port: 9090
 

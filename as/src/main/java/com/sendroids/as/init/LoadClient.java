@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.config.ClientSettings;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,6 +44,7 @@ public class LoadClient {
                         .redirectUri("http://client.localhost:9090/authorized")
                         .scope("read")
                         .scope("write")
+                        .clientIdIssuedAt(Instant.now())
                         .build(),
                 RegisteredClient
                         .withId(UUID.randomUUID().toString())
@@ -57,6 +59,7 @@ public class LoadClient {
                         .scope("read")
                         .scope("write")
                         .scope(OidcScopes.EMAIL)
+                        .clientIdIssuedAt(Instant.now())
                         .build(),
                 RegisteredClient
                         .withId(UUID.randomUUID().toString())
@@ -67,6 +70,18 @@ public class LoadClient {
                         .redirectUri("http://client.localhost:9090/credentials")
                         .scope("read")
                         .scope("write")
+                        .clientIdIssuedAt(Instant.now())
+                        .build(),
+                RegisteredClient
+                        .withId(UUID.randomUUID().toString())
+                        .clientId("dev-client")
+                        .clientSecret("{noop}dev-client-password")
+                        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                        .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                        .redirectUri("http://client.localhost:9090/dev-client")
+                        .scope("client.create")
+                        .scope("client.read")
+                        .clientIdIssuedAt(Instant.now())
                         .build(),
                 RegisteredClient
                         .withId(UUID.randomUUID().toString())
@@ -79,6 +94,7 @@ public class LoadClient {
                         .scope(OidcScopes.OPENID)
                         .scope("read")
                         .scope("write")
+                        .clientIdIssuedAt(Instant.now())
                         .build(),
                 RegisteredClient
                         .withId(UUID.randomUUID().toString())
@@ -87,6 +103,7 @@ public class LoadClient {
                         .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                         .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                         .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                        .clientIdIssuedAt(Instant.now())
                         .build()
         ).forEach(clientRepository::save);
     }
