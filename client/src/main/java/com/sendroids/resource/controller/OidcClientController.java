@@ -7,30 +7,22 @@ import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2Aut
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 
 @RestController
-public class MainController {
+@RequestMapping("/oidc")
+public class OidcClientController {
     private final WebClient webClient;
 
-    public MainController(WebClient webClient) {
+    public OidcClientController(WebClient webClient) {
         this.webClient = webClient;
     }
 
     @GetMapping("/message")
-    public String message(@RegisteredOAuth2AuthorizedClient("licky-client") OAuth2AuthorizedClient client) {
-        return webClient.get()
-                .uri("http://rescource.localhost:7070/message")
-                .attributes(ServerOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient(client))
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-    }
-
-    @GetMapping("/message-oidc")
     public String messageOidc(@RegisteredOAuth2AuthorizedClient("licky-client-oidc") OAuth2AuthorizedClient client) {
         return webClient.get()
                 .uri("http://rescource.localhost:7070/message")
@@ -40,27 +32,7 @@ public class MainController {
                 .block();
     }
 
-    @GetMapping("/authorized")
-    public String authorized(@RegisteredOAuth2AuthorizedClient("licky-client") OAuth2AuthorizedClient client) {
-        return client.getAccessToken().getTokenValue();
-    }
-
-    @GetMapping("/message-client")
-    public String messageClient(@RegisteredOAuth2AuthorizedClient("licky-client-credentials") OAuth2AuthorizedClient client) {
-        return webClient.get()
-                .uri("http://rescource.localhost:7070/message")
-                .attributes(ServerOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient(client))
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-    }
-
-    @GetMapping("/logout-client")
-    public int logoutClient(@RegisteredOAuth2AuthorizedClient("licky-client") OAuth2AuthorizedClient client) throws IOException {
-        return OAuth2Util.logout(client);
-    }
-
-    @GetMapping("/logout-oidc")
+    @GetMapping("/logout")
     public int logoutOidc(@RegisteredOAuth2AuthorizedClient("licky-client-oidc") OAuth2AuthorizedClient client) throws IOException {
         return OAuth2Util.logout(client);
     }

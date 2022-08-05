@@ -51,7 +51,7 @@ spring:
             client-secret: licky-oidc-password
             scope: openid,read,write,email
             authorization-grant-type: authorization_code
-            redirect-uri: http://client.localhost:9090/login/licky-client-oidc
+            redirect-uri: http://client.localhost:9090/oidc
             client-name: licky-client-oidc
           # 用于测试 oauth2-authorization_code 认证
           licky-client:
@@ -61,7 +61,7 @@ spring:
             client-authentication-method: client_secret_post
             scope: read,write
             authorization-grant-type: authorization_code
-            redirect-uri: http://client.localhost:9090/authorized
+            redirect-uri: http://client.localhost:9090/client/authorized
             client-name: licky-client
           # 用于 OIDC Client Registration
           dev-client:
@@ -71,7 +71,7 @@ spring:
             client-name: dev-client
             scope: client.create
             authorization-grant-type: client_credentials
-            redirect-uri: http://client.localhost:9090/dev-client
+            redirect-uri: http://client.localhost:9090/oidc/dev-client
         provider:
           licky-auth-server:
             issuer-uri: http://auth.localhost:8080
