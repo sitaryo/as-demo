@@ -49,7 +49,7 @@ spring:
             provider: licky-auth-server
             client-id: licky-client-oidc
             client-secret: licky-oidc-password
-            scope: openid,read,write,email
+            scope: openid,read,write,email,phone,address,profile
             authorization-grant-type: authorization_code
             redirect-uri: http://client.localhost:9090/oidc/authorized
             client-name: licky-client-oidc

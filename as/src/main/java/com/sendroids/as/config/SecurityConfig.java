@@ -14,17 +14,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.KeyPair;
@@ -32,16 +29,14 @@ import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private static final Function<HttpServletRequest,CorsConfiguration> corsConfigurationSource = (request) -> {
+    private static final Function<HttpServletRequest, CorsConfiguration> corsConfigurationSource = (request) -> {
         var corsConfig = new CorsConfiguration();
         corsConfig.setAllowedHeaders(Collections.singletonList(CorsConfiguration.ALL));
         corsConfig.setAllowedMethods(Collections.singletonList(CorsConfiguration.ALL));
@@ -60,7 +55,10 @@ public class SecurityConfig {
         RequestMatcher endpointsMatcher = authorizationServerConfigurer
                 .getEndpointsMatcher();
         authorizationServerConfigurer
-                .oidc(oidc -> oidc.clientRegistrationEndpoint(Customizer.withDefaults()));
+                .oidc(oidc -> oidc
+                        .clientRegistrationEndpoint(Customizer.withDefaults())
+                        .userInfoEndpoint((c) -> c.userInfoMapper(new OidcUserInfoMapper()))
+                );
 
         http
                 .requestMatcher(endpointsMatcher)
@@ -103,14 +101,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails userDetails = User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("password")
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(userDetails);
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean

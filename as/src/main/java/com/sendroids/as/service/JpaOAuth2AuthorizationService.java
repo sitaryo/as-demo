@@ -3,7 +3,11 @@ package com.sendroids.as.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.sendroids.as.entity.Authority;
 import com.sendroids.as.entity.Authorization;
+import com.sendroids.as.entity.UserEntity;
+import com.sendroids.as.entity.UserProfile;
 import com.sendroids.as.repo.AuthorizationRepository;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.security.jackson2.SecurityJackson2Modules;
@@ -43,6 +47,15 @@ public class JpaOAuth2AuthorizationService implements OAuth2AuthorizationService
         List<Module> securityModules = SecurityJackson2Modules.getModules(classLoader);
         this.objectMapper.registerModules(securityModules);
         this.objectMapper.registerModule(new OAuth2AuthorizationServerJackson2Module());
+
+        var h5m = new Hibernate5Module();
+        h5m.enable(Hibernate5Module.Feature.FORCE_LAZY_LOADING);
+        h5m.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        this.objectMapper.registerModule(h5m);
+
+        this.objectMapper.addMixIn(UserEntity.class, UserEntityMixin.class);
+        this.objectMapper.addMixIn(Authority.class, AuthorityMixin.class);
+        this.objectMapper.addMixIn(UserProfile.class, UserProfileMixin.class);
     }
 
     @Override
