@@ -8,28 +8,17 @@
         <version>0.0.1-SNAPSHOT</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <artifactId>client</artifactId>
+    <artifactId>user-sync</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>client</name>
-    <description>Demo of Oath2 client</description>
+    <name>user-sync</name>
+    <description>sync user between client and as</description>
     <properties>
         <java.version>17</java.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-client</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.sendroids</groupId>
-            <artifactId>user-sync</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <artifactId>spring-boot-starter-batch</artifactId>
         </dependency>
     </dependencies>
 

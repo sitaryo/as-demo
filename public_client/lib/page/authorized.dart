@@ -1,8 +1,6 @@
-import 'dart:math';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:oauth2/oauth2.dart' as oath2;
 import 'package:public_client/service/oauth2_service.dart';
 
@@ -32,15 +30,12 @@ class Authorized extends HookWidget {
       //   print("you get message:\n ${data.body}");
       // }).whenComplete(() => sending.value = false);
 
-      // Dio(BaseOptions(
-      //   method: "GET",
-      //   headers: {"authorization": client.value?.credentials.idToken ?? ""},
-      // )).get("http://auth.localhost:8080/userinfo").then((data) {
-      //   message.value = data.data;
-      //   print("you get message:\n ${data.data}");
-      // }).whenComplete(() => sending.value = false);
-      client.value?.get(
-        Uri.parse("http://auth.localhost:8080/userinfo")).then((data) {
+      print("here is your id token: ${client.value?.credentials.idToken}");
+      final jwt = JwtDecoder.decode(client.value?.credentials.idToken ?? "");
+      print("here is id token info :$jwt");
+      client.value
+          ?.get(Uri.parse("http://auth.localhost:8080/userinfo"))
+          .then((data) {
         message.value = data.body;
         print("you get message:\n ${data.body}");
       }).whenComplete(() => sending.value = false);

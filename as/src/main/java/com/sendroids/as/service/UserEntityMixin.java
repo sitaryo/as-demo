@@ -31,12 +31,6 @@ public class UserEntityMixin {
 
 class UserEntityMixinDeserializer extends JsonDeserializer<UserEntity> {
 
-    static final TypeReference<PersistentSet> AUTHORITY_SET_TYPE = new TypeReference<>() {
-    };
-
-    static final TypeReference<Set<Authority>> AUTHORITY_SET_TYPE1 = new TypeReference<>() {
-    };
-
     @Override
     public UserEntity deserialize(JsonParser parser, DeserializationContext context)
             throws IOException, JacksonException {
@@ -59,9 +53,10 @@ class UserEntityMixinDeserializer extends JsonDeserializer<UserEntity> {
         );
 
         var authorities = new HashSet<Authority>();
-        json.get("authorities").get(1).forEach(a -> {
-            authorities.add(mapper.convertValue(a, Authority.class));
-        });
+        json.get("authorities").get(1)
+                .forEach(a ->
+                        authorities.add(mapper.convertValue(a, Authority.class))
+                );
         user.setAuthorities(authorities);
 
         return user;
