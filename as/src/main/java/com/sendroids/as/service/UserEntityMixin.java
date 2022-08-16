@@ -18,6 +18,7 @@ import org.hibernate.collection.internal.PersistentSet;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 @JsonDeserialize(using = UserEntityMixinDeserializer.class)
@@ -39,7 +40,6 @@ class UserEntityMixinDeserializer extends JsonDeserializer<UserEntity> {
         var json = context.readTree(parser);
 
         var user = new UserEntity();
-        user.setId(json.get("id").asLong());
         user.setVersion(json.get("version").asLong());
         user.setUsername(json.get("username").asText());
         user.setPassword(json.get("password").asText());

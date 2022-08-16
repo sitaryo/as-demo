@@ -1,4 +1,4 @@
-package com.sendroids.usersync.entity;
+package com.sendroids.usersync.core.entity;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

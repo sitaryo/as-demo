@@ -4,6 +4,8 @@ import com.sendroids.as.entity.UserEntity;
 import com.sendroids.as.repo.UserRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
     private final UserRepo userRepo;
@@ -12,7 +14,11 @@ public class UserService {
         this.userRepo = userRepo;
     }
 
-    public void save(UserEntity userEntity){
+    public void save(UserEntity userEntity) {
         userRepo.save(userEntity);
+    }
+
+    public Optional<UserEntity> findUserByClientIdAndUsername(String clientId, String username) {
+        return userRepo.findByClientIdAndUsername(clientId,username);
     }
 }

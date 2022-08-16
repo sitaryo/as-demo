@@ -1,4 +1,4 @@
-package com.sendroids.usersync.entity;
+package com.sendroids.usersync.core.entity;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

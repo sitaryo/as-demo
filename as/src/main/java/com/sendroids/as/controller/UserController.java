@@ -4,14 +4,13 @@ import com.sendroids.as.entity.Authority;
 import com.sendroids.as.entity.UserEntity;
 import com.sendroids.as.entity.UserProfile;
 import com.sendroids.as.service.UserService;
-import com.sendroids.usersync.entity.ProfileInfo;
-import com.sendroids.usersync.entity.UserIdentity;
+import com.sendroids.usersync.core.entity.ProfileInfo;
+import com.sendroids.usersync.core.entity.UserIdentity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.introspection.OAuth2IntrospectionAuthenticatedPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -24,14 +23,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    private UserEntity UserIdentity2UserEntity(UserIdentity<Long> userIdentity) {
-        var auth = (OAuth2IntrospectionAuthenticatedPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        auth.getSubject();
+    private UserEntity UserIdentity2UserEntity(UserIdentity userIdentity, String clientId) {
+
         var user = new UserEntity();
         user.setUsername(userIdentity.getUsername());
         user.setPassword(userIdentity.getPassword());
-        user.setClientId(auth.getSubject());
-        user.setUnionId(UUID.randomUUID().toString());
+        user.setClientId(clientId);
         user.setAuthorities(userIdentity.getAuthorities().stream().map(r -> new Authority(r.getAuthority())).collect(Collectors.toSet()));
         user.setEnabled(userIdentity.isEnabled());
         user.setAccountNonLocked(user.isAccountNonLocked());
@@ -67,11 +64,10 @@ public class UserController {
         return user;
     }
 
-    private UserIdentity<Long> userEntity2UserIdentity(UserEntity user) {
+    private UserIdentity userEntity2UserIdentity(UserEntity user) {
         var profile = user.getUserProfile();
         return UserIdentity
-                .<Long>builder()
-                .id(user.getId())
+                .builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
                 .unionId(user.getUnionId())
@@ -86,7 +82,7 @@ public class UserController {
                 .authorities(
                         user.getAuthorities()
                                 .stream()
-                                .map(a -> new com.sendroids.usersync.entity.Authority(a.getAuthority()))
+                                .map(a -> new com.sendroids.usersync.core.entity.Authority(a.getAuthority()))
                                 .collect(Collectors.toSet())
                 )
                 .profileInfo(
@@ -112,15 +108,23 @@ public class UserController {
 
     @PostMapping("/register")
     @PreAuthorize("hasAuthority('SCOPE_users.register')")
-    public UserIdentity<Long> registerUser(@RequestBody UserIdentity<Long> user) {
-        var toSave = UserIdentity2UserEntity(user);
-        userService.save(toSave);
-        return userEntity2UserIdentity(toSave);
+    public UserIdentity registerUser(@RequestBody UserIdentity user) {
+        var auth = (OAuth2IntrospectionAuthenticatedPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var clientId = auth.getSubject();
+
+        var dbUser = userService.findUserByClientIdAndUsername(clientId, user.getUsername())
+                .orElseGet(() -> {
+                    var toSave = UserIdentity2UserEntity(user, clientId);
+                    userService.save(toSave);
+                    return toSave;
+                });
+
+        return userEntity2UserIdentity(dbUser);
     }
 
     @PutMapping("/update")
     @PreAuthorize("hasAuthority('SCOPE_users.update')")
-    public void updateUser(@RequestBody UserIdentity<Long> user) {
+    public void updateUser(@RequestBody UserIdentity user) {
 
     }
 

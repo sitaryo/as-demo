@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -22,18 +23,27 @@ import java.util.Set;
 @Setter
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserEntity implements UserDetails, Serializable, DomainModelEntity<Long, Long> {
+public class UserEntity implements UserDetails, Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Nullable
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(
+                            name = "uuid_gen_strategy_class",
+                            value = "org.hibernate.id.uuid.CustomVersionOneStrategy"
+                    )
+            }
+    )
+    @Setter(AccessLevel.NONE)
+    String unionId;
 
     String clientId;
-    String unionId;
 
     @Access(AccessType.FIELD)
     @Version
@@ -74,7 +84,7 @@ public class UserEntity implements UserDetails, Serializable, DomainModelEntity<
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         UserEntity that = (UserEntity) o;
-        return getId() != null && Objects.equals(getId(), that.getId());
+        return getUnionId() != null && Objects.equals(getUnionId(), that.getUnionId());
     }
 
     @Override

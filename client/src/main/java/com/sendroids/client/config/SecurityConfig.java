@@ -1,6 +1,6 @@
 package com.sendroids.client.config;
 
-import com.sendroids.usersync.config.UnionPasswordEncoderConfig;
+import com.sendroids.usersync.core.config.UnionPasswordEncoderConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

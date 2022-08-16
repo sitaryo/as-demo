@@ -1,4 +1,4 @@
-package com.sendroids.usersync.entity;
+package com.sendroids.usersync.core.entity;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -12,9 +12,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public final class UserIdentity<ID> implements UserDetails {
+public final class UserIdentity implements UserDetails {
 
-    ID id;
     String username;
     String password;
     String unionId;
@@ -22,8 +21,8 @@ public final class UserIdentity<ID> implements UserDetails {
     boolean phoneNumberVerified;
     String email;
     boolean emailVerified;
-    UserIdentity<ID> host;
-    Set<UserIdentity<ID>> mergedUsers;
+    UserIdentity host;
+    Set<UserIdentity> mergedUsers;
     ProfileInfo profileInfo;
 
     boolean accountNonExpired;
