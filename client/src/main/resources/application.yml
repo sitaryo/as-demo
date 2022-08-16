@@ -13,7 +13,7 @@ spring:
         bootstrap-mode: lazy
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/as-data?characterEncoding=utf8&useSSL=false&autoReconnect=true
+    url: jdbc:postgresql://localhost:5433/client-data?characterEncoding=utf8&useSSL=false&autoReconnect=true
     username: postgres
     password: abcd1234
     driver-class-name: org.postgresql.Driver
@@ -26,12 +26,14 @@ spring:
     show-sql: true
     database: postgresql
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
       use-new-id-generator-mappings: true
     open-in-view: true
   batch:
     jdbc:
       initialize-schema: always
+    job:
+      enabled: false
 
   security:
     oauth2:
@@ -43,7 +45,7 @@ spring:
             provider: licky-auth-server
             client-id: licky-client-credentials
             client-secret: licky-credentials-password
-            scope: read,write
+            scope: read,write,user.register,user.update,user.delete
             authorization-grant-type: client_credentials
             redirect-uri: http://client.localhost:9090/credentials
             client-name: licky-client-credentials

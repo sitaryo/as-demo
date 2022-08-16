@@ -136,6 +136,9 @@ public class LoadDefaultData {
                         .redirectUri("http://client.localhost:9090/credentials")
                         .scope("read")
                         .scope("write")
+                        .scope("user.register")
+                        .scope("user.update")
+                        .scope("user.delete")
                         .clientIdIssuedAt(Instant.now())
                         .build(),
                 RegisteredClient

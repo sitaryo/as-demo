@@ -9,3 +9,12 @@ services:
       POSTGRES_USER: postgres
     ports:
       - "5432:5432"
+  client:
+    image: postgres:12.3
+    container_name: "client-data"
+    environment:
+      POSTGRES_PASSWORD: abcd1234
+      POSTGRES_DB: client-data
+      POSTGRES_USER: postgres
+    ports:
+      - "5433:5432"

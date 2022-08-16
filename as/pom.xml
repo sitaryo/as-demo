@@ -30,6 +30,11 @@
             <artifactId>jackson-datatype-hibernate5</artifactId>
             <version>2.13.3</version>
         </dependency>
+        <dependency>
+            <groupId>com.sendroids</groupId>
+            <artifactId>user-sync</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

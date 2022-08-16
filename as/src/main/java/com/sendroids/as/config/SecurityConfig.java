@@ -5,8 +5,10 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.sendroids.usersync.config.UnionPasswordEncoderConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
@@ -33,6 +35,7 @@ import java.util.UUID;
 import java.util.function.Function;
 
 @Configuration
+@Import(UnionPasswordEncoderConfig.class)
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -69,15 +72,11 @@ public class SecurityConfig {
                 .configurationSource(corsConfigurationSource::apply)
                 .and()
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
-                .apply(authorizationServerConfigurer);
-
-        http
                 .exceptionHandling((exceptions) -> exceptions
                         .authenticationEntryPoint(
                                 new LoginUrlAuthenticationEntryPoint("/login"))
                 )
-                .oauth2ResourceServer()
-                .jwt();
+                .apply(authorizationServerConfigurer);
 
         return http.build();
     }
@@ -90,19 +89,22 @@ public class SecurityConfig {
                 .cors()
                 .configurationSource(corsConfigurationSource::apply)
                 .and()
+                .csrf()
+                .disable()
                 .authorizeHttpRequests((authorize) -> authorize
                         .antMatchers(HttpMethod.OPTIONS)
                         .permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(Customizer.withDefaults());
+                .formLogin(Customizer.withDefaults())
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .opaqueToken(opaqueToken -> opaqueToken
+                                .introspectionUri("http://auth.localhost:8080/oauth2/introspect")
+                                .introspectionClientCredentials("resource-client", "resource-client-password")
+                        )
+                );
 
         return http.build();
-    }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
     @Bean

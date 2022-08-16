@@ -1,4 +1,4 @@
-package com.sendroids.as.entity;
+package com.sendroids.client.entity;
 
 import com.sun.istack.NotNull;
 import lombok.AccessLevel;
@@ -8,7 +8,6 @@ import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.Hibernate;
 import org.springframework.lang.Nullable;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.io.Serial;
@@ -22,7 +21,7 @@ import java.util.Set;
 @Setter
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserEntity implements UserDetails, Serializable, DomainModelEntity<Long, Long> {
+public class UserEntity implements Serializable, DomainModelEntity<Long, Long> {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -32,7 +31,6 @@ public class UserEntity implements UserDetails, Serializable, DomainModelEntity<
     @Nullable
     private Long id;
 
-    String clientId;
     String unionId;
 
     @Access(AccessType.FIELD)
@@ -47,6 +45,7 @@ public class UserEntity implements UserDetails, Serializable, DomainModelEntity<
     /**
      * 用户名
      */
+    @Column(unique = true)
     @NotNull
     String username;
 
