@@ -19,6 +19,14 @@ public class UserService {
     }
 
     public Optional<UserEntity> findUserByClientIdAndUsername(String clientId, String username) {
-        return userRepo.findByClientIdAndUsername(clientId,username);
+        return userRepo.findByClientIdAndUsername(clientId, username);
+    }
+
+    public Optional<UserEntity> findUserByUnionIdAndClientId(String unionId, String clientId) {
+        return userRepo.findByUnionIdAndClientId(unionId, clientId);
+    }
+
+    public void delete(UserEntity user) {
+        userRepo.delete(user);
     }
 }

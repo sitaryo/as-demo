@@ -6,6 +6,7 @@ import com.sendroids.as.entity.UserProfile;
 import com.sendroids.as.service.UserService;
 import com.sendroids.usersync.core.entity.ProfileInfo;
 import com.sendroids.usersync.core.entity.UserIdentity;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.introspection.OAuth2IntrospectionAuthenticatedPrincipal;
@@ -106,7 +107,7 @@ public class UserController {
                 ).build();
     }
 
-    @PostMapping("/register")
+    @PostMapping
     @PreAuthorize("hasAuthority('SCOPE_users.register')")
     public UserIdentity registerUser(@RequestBody UserIdentity user) {
         var auth = (OAuth2IntrospectionAuthenticatedPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -122,15 +123,39 @@ public class UserController {
         return userEntity2UserIdentity(dbUser);
     }
 
-    @PutMapping("/update")
+    @PutMapping
     @PreAuthorize("hasAuthority('SCOPE_users.update')")
-    public void updateUser(@RequestBody UserIdentity user) {
+    public UserIdentity updateUser(@RequestBody UserIdentity user) {
+        var auth = (OAuth2IntrospectionAuthenticatedPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var clientId = auth.getSubject();
+        return userService.findUserByUnionIdAndClientId(user.getUnionId(),clientId)
+                .map(dbUser -> {
+                    var toUpdate = UserIdentity2UserEntity(user, clientId);
+                    dbUser.setPassword(toUpdate.getPassword());
+                    dbUser.setAuthorities(toUpdate.getAuthorities());
 
+                    dbUser.setEnabled(toUpdate.isEnabled());
+                    dbUser.setCredentialsNonExpired(toUpdate.isCredentialsNonExpired());
+                    dbUser.setAccountNonExpired(toUpdate.isAccountNonExpired());
+                    dbUser.setAccountNonLocked(toUpdate.isAccountNonLocked());
+                    BeanUtils.copyProperties(
+                            toUpdate.getUserProfile(),
+                            dbUser.getUserProfile(),
+                            "id",
+                            "version"
+                    );
+                    userService.save(dbUser);
+                    return userEntity2UserIdentity(dbUser);
+                })
+                .orElse(user);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('SCOPE_users.delete')")
     public void deleteUser(@PathVariable String id) {
-
+        var auth = (OAuth2IntrospectionAuthenticatedPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var clientId = auth.getSubject();
+        userService.findUserByUnionIdAndClientId(id,clientId)
+                .ifPresent(userService::delete);
     }
 }

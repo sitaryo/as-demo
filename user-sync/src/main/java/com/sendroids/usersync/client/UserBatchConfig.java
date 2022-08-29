@@ -13,10 +13,9 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -26,12 +25,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 @Slf4j
 public class UserBatchConfig<USER> {
 
-    @Autowired private JobLauncher jobLauncher;
-    @Autowired private JobBuilderFactory jobBuilderFactory;
-    @Autowired private StepBuilderFactory stepBuilderFactory;
-    @Autowired private ItemReader<USER> reader;
-    @Autowired private ItemProcessor<USER, UserIdentity> processor;
-    @Autowired private ItemWriter<UserIdentity> writer;
+    private final JobLauncher jobLauncher;
+    private final JobBuilderFactory jobBuilderFactory;
+    private final StepBuilderFactory stepBuilderFactory;
+    private final ItemReader<USER> reader;
+    private final ItemWriter<UserIdentity> writer;
+    private final SyncUserService<USER> syncUserService;
 
     @Value("${sync.user.job-name:sync-user-job}")
     private String jobName;
@@ -42,11 +41,27 @@ public class UserBatchConfig<USER> {
     @Value("${sync.user.chunk:100}")
     private int chunk;
 
+    public UserBatchConfig(
+            JobLauncher jobLauncher,
+            JobBuilderFactory jobBuilderFactory,
+            StepBuilderFactory stepBuilderFactory,
+            @NonNull ItemReader<USER> reader,
+            @NonNull ItemWriter<UserIdentity> writer,
+            SyncUserService<USER> syncUserService
+    ) {
+        this.jobLauncher = jobLauncher;
+        this.jobBuilderFactory = jobBuilderFactory;
+        this.stepBuilderFactory = stepBuilderFactory;
+        this.reader = reader;
+        this.writer = writer;
+        this.syncUserService = syncUserService;
+    }
+
     private Job syncUserJob() {
         var syncStep = stepBuilderFactory.get(stepName)
                 .<USER, UserIdentity>chunk(chunk)
                 .reader(reader)
-                .processor(processor)
+                .processor((ItemProcessor<USER, UserIdentity>) syncUserService::createUser)
                 .writer(writer)
                 .build();
         return jobBuilderFactory.get(jobName)
@@ -56,7 +71,7 @@ public class UserBatchConfig<USER> {
                 .build();
     }
 
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "${sync.user.cron}")
     public void perform() throws Exception {
         JobParameters params = new JobParametersBuilder()
                 .addString("JobID", String.valueOf(System.currentTimeMillis()))

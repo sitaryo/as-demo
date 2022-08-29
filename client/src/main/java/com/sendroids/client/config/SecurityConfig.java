@@ -24,6 +24,8 @@ public class SecurityConfig {
                                         .anyRequest()
                                         .permitAll()
                 )
+                .csrf()
+                .disable()
                 .oauth2Login()
                 // 用来匹配进入 OAuth2LoginAuthenticationFilter ,默认为 /login/oauth2/code/*
                 .loginProcessingUrl("/oidc/authorized")

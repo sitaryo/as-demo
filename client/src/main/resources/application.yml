@@ -87,3 +87,12 @@ logging:
   level:
     root: info
     org.springframework.security.*: TRACE
+
+sync:
+  user:
+    job-name: sync-user-job
+    step-name: sync-user-step
+    chunk: 50
+    cron: 0 0/1 * * * ?
+    client-id: licky-client-credentials
+    uri: http://rescource.localhost:8080/users
