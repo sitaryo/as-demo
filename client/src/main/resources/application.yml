@@ -45,7 +45,7 @@ spring:
             provider: licky-auth-server
             client-id: licky-client-credentials
             client-secret: licky-credentials-password
-            scope: read,write,user.register,user.update,user.delete
+            scope: read,write,user.register,user.update,user.delete,user.read
             authorization-grant-type: client_credentials
             redirect-uri: http://client.localhost:9090/credentials
             client-name: licky-client-credentials

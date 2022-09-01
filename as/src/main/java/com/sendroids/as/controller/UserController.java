@@ -158,4 +158,14 @@ public class UserController {
         userService.findUserByUnionIdAndClientId(id,clientId)
                 .ifPresent(userService::delete);
     }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_users.read')")
+    public UserIdentity getUser(@PathVariable String id) {
+        var auth = (OAuth2IntrospectionAuthenticatedPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var clientId = auth.getSubject();
+        var  dbUser = userService.findUserByUnionIdAndClientId(id,clientId)
+                .orElseThrow();
+        return userEntity2UserIdentity(dbUser);
+    }
 }

@@ -139,6 +139,7 @@ public class LoadDefaultData {
                         .scope("user.register")
                         .scope("user.update")
                         .scope("user.delete")
+                        .scope("user.read")
                         .clientIdIssuedAt(Instant.now())
                         .build(),
                 RegisteredClient

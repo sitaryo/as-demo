@@ -88,4 +88,13 @@ public abstract class SyncUserService<USER> {
                 .bodyToMono(Void.class)
                 .block();
     }
+
+    public UserIdentity readUser(@NonNull String unionId) {
+        return webClient.get()
+                .uri(baseUri + "/" + unionId)
+                .headers(h -> h.setBearerAuth(accessToken().getTokenValue()))
+                .retrieve()
+                .bodyToMono(UserIdentity.class)
+                .block();
+    }
 }
