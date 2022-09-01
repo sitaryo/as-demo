@@ -17,6 +17,16 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+// 一、 周期同步用户
+// 1. 启用 @EnableBatchSyncUser
+// 2. 提供基础 bean
+//      2.1 ItemReader<USER> 从数据库读取需要同步的用户信息
+//      2.2 ToUserIdentity<USER> 提供本地 user 转换为 UserIdentity 的方法
+//      2.3 ItemWriter<USER> 获取同步好的 UserIdentity 更新本地 user 实体
+//
+// 二、 手动同步管理
+// 1. 实现 SyncUserService, 并注入到容器中（需要提供 ToUserIdentity<USER> bean 作为前提）
+// 2. 使用 SyncUserService 方法管理用户。包括 createUser updateUser deleteUser
 @Configuration
 @EnableBatchSyncUser
 @Slf4j

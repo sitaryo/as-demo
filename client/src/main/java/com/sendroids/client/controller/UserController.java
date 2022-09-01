@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
-// todo add api
 @RestController
 @RequestMapping("/users")
 public class UserController {
