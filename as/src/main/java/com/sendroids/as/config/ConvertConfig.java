@@ -3,10 +3,10 @@ package com.sendroids.as.config;
 import com.sendroids.as.entity.Authority;
 import com.sendroids.as.entity.UserEntity;
 import com.sendroids.as.entity.UserProfile;
-import com.sendroids.usersync.core.converter.FromUserIdentity;
-import com.sendroids.usersync.core.converter.ToUserIdentity;
-import com.sendroids.usersync.core.entity.ProfileInfo;
-import com.sendroids.usersync.core.entity.UserIdentity;
+import com.sendroids.usersynccore.converter.FromUserIdentity;
+import com.sendroids.usersynccore.converter.ToUserIdentity;
+import com.sendroids.usersynccore.entity.ProfileInfo;
+import com.sendroids.usersynccore.entity.UserIdentity;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -77,7 +77,7 @@ public class ConvertConfig {
                     .authorities(
                             user.getAuthorities()
                                     .stream()
-                                    .map(a -> new com.sendroids.usersync.core.entity.Authority(a.getAuthority()))
+                                    .map(a -> new com.sendroids.usersynccore.entity.Authority(a.getAuthority()))
                                     .collect(Collectors.toSet())
                     )
                     .profileInfo(

@@ -2,9 +2,9 @@ package com.sendroids.as.controller;
 
 import com.sendroids.as.entity.UserEntity;
 import com.sendroids.as.service.UserService;
-import com.sendroids.usersync.as.ASUserController;
-import com.sendroids.usersync.core.converter.FromUserIdentity;
-import com.sendroids.usersync.core.converter.ToUserIdentity;
+import com.sendroids.usersyncas.ASUserController;
+import com.sendroids.usersynccore.converter.FromUserIdentity;
+import com.sendroids.usersynccore.converter.ToUserIdentity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

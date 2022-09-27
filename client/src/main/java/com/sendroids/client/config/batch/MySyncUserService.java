@@ -1,8 +1,8 @@
 package com.sendroids.client.config.batch;
 
 import com.sendroids.client.entity.UserEntity;
-import com.sendroids.usersync.client.SyncUserService;
-import com.sendroids.usersync.core.converter.ToUserIdentity;
+import com.sendroids.usersyncclient.SyncUserService;
+import com.sendroids.usersynccore.converter.ToUserIdentity;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;

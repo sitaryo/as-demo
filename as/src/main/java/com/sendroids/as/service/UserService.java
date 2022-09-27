@@ -2,7 +2,7 @@ package com.sendroids.as.service;
 
 import com.sendroids.as.entity.UserEntity;
 import com.sendroids.as.repo.UserRepo;
-import com.sendroids.usersync.as.ASUserService;
+import com.sendroids.usersyncas.ASUserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

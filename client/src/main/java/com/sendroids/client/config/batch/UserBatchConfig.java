@@ -2,11 +2,11 @@ package com.sendroids.client.config.batch;
 
 import com.sendroids.client.entity.UserEntity;
 import com.sendroids.client.repo.UserRepo;
-import com.sendroids.usersync.client.annotation.EnableBatchSyncUser;
-import com.sendroids.usersync.core.converter.ToUserIdentity;
-import com.sendroids.usersync.core.entity.Authority;
-import com.sendroids.usersync.core.entity.ProfileInfo;
-import com.sendroids.usersync.core.entity.UserIdentity;
+import com.sendroids.usersyncclient.annotation.EnableBatchSyncUser;
+import com.sendroids.usersynccore.converter.ToUserIdentity;
+import com.sendroids.usersynccore.entity.Authority;
+import com.sendroids.usersynccore.entity.ProfileInfo;
+import com.sendroids.usersynccore.entity.UserIdentity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;

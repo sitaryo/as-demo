@@ -5,7 +5,7 @@ import com.sendroids.client.entity.Authority;
 import com.sendroids.client.entity.UserEntity;
 import com.sendroids.client.entity.UserProfile;
 import com.sendroids.client.repo.UserRepo;
-import com.sendroids.usersync.core.entity.UserIdentity;
+import com.sendroids.usersynccore.entity.UserIdentity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
