@@ -41,8 +41,8 @@ public class LoadDefaultData {
 
     private UserEntity createUser(int i) {
         var user = new UserEntity();
-        user.setUsername("user" + i);
-        user.setPassword(passwordEncoder.encode("user" + i));
+        user.setUsername("user-" + i);
+        user.setPassword(passwordEncoder.encode("user-" + i));
         user.addAuthority(new Authority(Authority.ROLE.CLIENT_USER));
         var userProfile = new UserProfile();
         userProfile.setEmail("user-email-" + i);

@@ -17,10 +17,10 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Slf4j
-public abstract class SyncUserService<USER> {
+public abstract class SyncUserService<U> {
 
     private static OAuth2AccessToken accessToken;
-    private final ToUserIdentity<USER> toUserIdentity;
+    private final ToUserIdentity<U> toUserIdentity;
     private final ClientRegistrationRepository clientRegistrationRepository;
     private final WebClient webClient;
     @Value("${sync.user.uri}")
@@ -29,7 +29,7 @@ public abstract class SyncUserService<USER> {
     private String clientId;
 
     public SyncUserService(
-            ToUserIdentity<USER> toUserIdentity,
+            ToUserIdentity<U> toUserIdentity,
             ClientRegistrationRepository clientRegistrationRepository,
             WebClient webClient
     ) {
@@ -56,7 +56,7 @@ public abstract class SyncUserService<USER> {
         return accessToken;
     }
 
-    public UserIdentity updateUser(@NonNull USER user) {
+    public UserIdentity updateUser(@NonNull U user) {
         var data = toUserIdentity.convert(user);
         return webClient.put()
                 .uri(baseUri)
@@ -68,7 +68,7 @@ public abstract class SyncUserService<USER> {
                 .block();
     }
 
-    public UserIdentity createUser(@NonNull USER user) {
+    public UserIdentity createUser(@NonNull U user) {
         var data = toUserIdentity.convert(user);
         return webClient.post()
                 .uri(baseUri)

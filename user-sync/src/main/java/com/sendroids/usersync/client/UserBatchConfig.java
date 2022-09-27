@@ -28,6 +28,7 @@ public class UserBatchConfig<USER> {
     private final JobLauncher jobLauncher;
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
+
     private final ItemReader<USER> reader;
     private final ItemWriter<UserIdentity> writer;
     private final SyncUserService<USER> syncUserService;
